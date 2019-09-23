@@ -1,3 +1,6 @@
+/*
+ * The copyright of this file belongs to Koninklijke Philips N.V., 2019.
+ */
 package com.philips.bootcamp.analyzerweb.utils;
 
 import java.io.BufferedWriter;
@@ -10,6 +13,10 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
 public class FileUtils {
+
+  private FileUtils() {
+
+  }
 
   public static File createDirectory(String folderName) {
     final File directory = new File(folderName);

@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 public class CommandLineExecutor {
   private CommandLineExecutor() {
   }
-  
+
   public static StringBuilder runShellCommand(String[] args)
       throws IOException {
     final ProcessBuilder builder = new ProcessBuilder();
@@ -24,8 +24,6 @@ public class CommandLineExecutor {
     while ((line = br.readLine()) != null) {
       cmdOutput.append(String.format("%s%n", line));
     }
-    //    int exitCode = process.waitFor();
-    //    assert exitCode == 0;
     return cmdOutput;
   }
 }

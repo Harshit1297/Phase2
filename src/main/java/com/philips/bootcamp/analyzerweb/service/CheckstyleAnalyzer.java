@@ -58,8 +58,7 @@ public class CheckstyleAnalyzer extends Tool {
 
   @Override
   public String toString() {
-    // TODO Auto-generated method stub
-    return null;
+    return "";
   }
 
 }

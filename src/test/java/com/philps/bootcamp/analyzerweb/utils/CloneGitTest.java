@@ -11,7 +11,7 @@ import com.philips.bootcamp.analyzerweb.utils.CloneGit;
 
 public class CloneGitTest {
   @Test
-  public void cloneRepoTestPass() {
+  public void cloneRepoTestWhenValidGitHubLinkIsPassed() {
     final CloneGit cg = new CloneGit();
     final String out = cg.cloneRepo("https://github.com/sidd397/MyRepo.git");
     assertEquals("C:/Project_Material/GithubProjects/", out);
@@ -20,7 +20,7 @@ public class CloneGitTest {
   }
 
   @Test
-  public void cloneRepoTestFail() {
+  public void cloneRepoTestWhenInvalidGitHubLinkIsPassed() {
     final CloneGit cg = new CloneGit();
     final String out = cg.cloneRepo("blah");
     assertEquals("C:/Project_Material/GithubProjects/", out);

@@ -26,10 +26,10 @@ import com.philips.bootcamp.analyzerweb.utils.Values;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AnalyzerWebApplicationTests {
+public class StaticCodeAnalyzerControllerTest {
 
   @Test
-  public void generateReport_CheckstyleAnalyzer_ValidFilePath_GeneratesReportSuccessfully() throws InterruptedException, FilePathNotValidException, IOException {
+  public void generateReportCheckstyleAnalyzerValidFilePathGeneratesReportSuccessfully() throws InterruptedException, FilePathNotValidException, IOException {
     final CheckstyleAnalyzer checkstyleTool = new CheckstyleAnalyzer(Values.TEST_VALID_FILE_PATH, Values.CHECKSTYLE_PATH,
         Values.CHECKSTYLE_RULESET);
     StringBuilder output = null;
@@ -38,7 +38,7 @@ public class AnalyzerWebApplicationTests {
   }
 
   @Test
-  public void generateReport_PmdAnalyzer_ValidFilePath_GeneratesReportSuccessfully() throws FilePathNotValidException, IOException, InterruptedException {
+  public void generateReportPmdAnalyzerValidFilePathGeneratesReportSuccessfully() throws FilePathNotValidException, IOException, InterruptedException {
     final PmdAnalyzer pmdTool = new PmdAnalyzer(Values.TEST_VALID_FILE_PATH, Values.PMD_RULESET);
     StringBuilder output = null;
     output = pmdTool.generateReport();
@@ -46,7 +46,7 @@ public class AnalyzerWebApplicationTests {
   }
 
   @Test
-  public void generateReport_SimilarityAnalyzer_ValidFilePath_GeneratesReportSuccessfully() throws FilePathNotValidException, IOException, InterruptedException {
+  public void generateReportSimilarityAnalyzerValidFilePathGeneratesReportSuccessfully() throws FilePathNotValidException, IOException, InterruptedException {
     final SimilarityAnalyzer simianTool = new SimilarityAnalyzer(Values.TEST_VALID_FILE_PATH, Values.SIMIAN_PATH);
     StringBuilder output = null;
     output = simianTool.generateReport();
@@ -54,7 +54,7 @@ public class AnalyzerWebApplicationTests {
   }
 
   @Test
-  public void generateReport_IntegratedAnalyzer_ValidFilePath_GeneratesReportSuccessfully() throws FilePathNotValidException, IOException, InterruptedException {
+  public void generateReportIntegratedAnalyzerValidFilePathGeneratesReportSuccessfully() throws FilePathNotValidException, IOException, InterruptedException {
     final PmdAnalyzer pmdTool = new PmdAnalyzer(Values.TEST_VALID_FILE_PATH, Values.PMD_RULESET);
     final CheckstyleAnalyzer checkstyleTool = new CheckstyleAnalyzer(Values.TEST_VALID_FILE_PATH, Values.CHECKSTYLE_PATH,
         Values.CHECKSTYLE_RULESET);
@@ -69,26 +69,26 @@ public class AnalyzerWebApplicationTests {
   }
 
   @Test(expected = FilePathNotValidException.class)
-  public void generateReport_CheckstyleAnalyzer_InvalidFilePath_ExceptionThrown() throws FilePathNotValidException, IOException, InterruptedException {
+  public void generateReportCheckstyleAnalyzerInvalidFilePathExceptionThrown() throws FilePathNotValidException, IOException, InterruptedException {
     final CheckstyleAnalyzer checkstyleTool = new CheckstyleAnalyzer(Values.TEST_INVALID_FILE_PATH, Values.CHECKSTYLE_PATH,
         Values.CHECKSTYLE_RULESET);
     checkstyleTool.generateReport();
   }
 
   @Test(expected = FilePathNotValidException.class)
-  public void generateReport_PmdAnalyzer_InvalidFilePath_ExceptionThrown() throws FilePathNotValidException, IOException, InterruptedException {
+  public void generateReportPmdAnalyzerInvalidFilePathExceptionThrown() throws FilePathNotValidException, IOException, InterruptedException {
     final PmdAnalyzer pmdTool = new PmdAnalyzer(Values.TEST_INVALID_FILE_PATH, Values.PMD_RULESET);
     pmdTool.generateReport();
   }
 
   @Test(expected = FilePathNotValidException.class)
-  public void generateReport_SimilarityAnalyzer_InvalidFilePath_ExceptionThrown() throws FilePathNotValidException, IOException, InterruptedException {
+  public void generateReportSimilarityAnalyzerInvalidFilePathExceptionThrown() throws FilePathNotValidException, IOException, InterruptedException {
     final SimilarityAnalyzer simianTool = new SimilarityAnalyzer(Values.TEST_INVALID_FILE_PATH, Values.SIMIAN_PATH);
     simianTool.generateReport();
   }
 
   @Test(expected = FilePathNotValidException.class)
-  public void generateReport_IntegratedAnalyzer_InvalidFilePath_ExceptionThrown() throws FilePathNotValidException, IOException, InterruptedException {
+  public void generateReportIntegratedAnalyzerTestInvalidFilePathExceptionThrown() throws FilePathNotValidException, IOException, InterruptedException {
     final PmdAnalyzer pmdTool = new PmdAnalyzer(Values.TEST_INVALID_FILE_PATH, Values.PMD_RULESET);
     final CheckstyleAnalyzer checkstyleTool = new CheckstyleAnalyzer(Values.TEST_INVALID_FILE_PATH, Values.CHECKSTYLE_PATH,
         Values.CHECKSTYLE_RULESET);
@@ -100,84 +100,18 @@ public class AnalyzerWebApplicationTests {
     integratedAnalyzer.generateReport();
   }
   @Test
-  public void getJavaFileListValidDirectory() throws Exception{
+  public void getJavaFileListTestValidDirectory() throws Exception{
     final JavaFileLister jfl = new JavaFileLister();
     final List<String> fileList=jfl.javaFilefilter(Values.TEST_VALID_FILE_PATH);
     assertTrue(fileList.size()>0);
   }
 
   @Test(expected = NullPointerException.class)
-  public void getJavaFileListInvalidDirectory() throws Exception{
+  public void getJavaFileListTestInvalidDirectory() throws Exception{
     final JavaFileLister jfl = new JavaFileLister();
     final List<String> fileList=jfl.javaFilefilter(Values.TEST_INVALID_FILE_PATH);
     assertTrue(fileList.size()== 0);
   }
-
-  /*
-  @Test
-  public void generateReport_APIController_PmdAnalyzer_ValidFilePath_GenerateWithOKSTatus() throws Exception {
-    final String testUri = "/api/pmd/?path=" + PathEncoder.encodeURI(Values.TEST_VALID_FILE_PATH);
-    final RestTemplate restTemplate = new RestTemplate();
-    final String baseUrl = "http://localhost:8080" + testUri;
-    final URI uri = new URI(baseUrl);
-    final ResponseEntity<String> result = restTemplate.getForEntity(uri, String.class);
-    assertEquals(200, result.getStatusCodeValue());
-  }
-
-  @Test
-  public void generateReport_APIController_CheckstyleAnalyzer_ValidFilePath_GenerateWithOKSTatus() throws Exception {
-    final String testUri = "/api/cs/?path=" + PathEncoder.encodeURI(Values.TEST_VALID_FILE_PATH);
-    final RestTemplate restTemplate = new RestTemplate();
-    final String baseUrl = "http://localhost:8080" + testUri;
-    final URI uri = new URI(baseUrl);
-    final ResponseEntity<String> result = restTemplate.getForEntity(uri, String.class);
-    assertEquals(200, result.getStatusCodeValue());
-  }
-
-  @Test(expected = HttpClientErrorException.class)
-  public void generateReport_APIController_PmdAnalyzer_InvalidFilePath_GenerateWith404STatus() throws UnsupportedEncodingException, URISyntaxException {
-    final String testUri = "/api/pmd/?path=" + PathEncoder.encodeURI(Values.TEST_INVALID_FILE_PATH);
-    final RestTemplate restTemplate = new RestTemplate();
-    final String baseUrl = "http://localhost:8080" + testUri;
-    final URI uri = new URI(baseUrl);
-    ResponseEntity<String> result = null;
-    result = restTemplate.getForEntity(uri, String.class);
-    assertEquals(404, result.getStatusCodeValue());
-  }
-
-  @Test(expected = HttpClientErrorException.class)
-  public void generateReport_APIController_CheckstyleAnalyzer_InvalidFilePath_GenerateWith404STatus() throws UnsupportedEncodingException, URISyntaxException {
-    final String testUri = "/api/cs/?path=" + PathEncoder.encodeURI(Values.TEST_INVALID_FILE_PATH);
-    final RestTemplate restTemplate = new RestTemplate();
-    final String baseUrl = "http://localhost:8080" + testUri;
-    final URI uri = new URI(baseUrl);
-    ResponseEntity<String> result = null;
-    result = restTemplate.getForEntity(uri, String.class);
-    assertEquals(404, result.getStatusCodeValue());
-  }
-
-  @Test
-  public void generateReport_APIController_DuplicationAnalyzer_ValidFilePath_GenerateWithOKSTatus() throws Exception {
-    final String testUri = "/api/sim/?path=" + PathEncoder.encodeURI(Values.TEST_VALID_FILE_PATH);
-    final RestTemplate restTemplate = new RestTemplate();
-    final String baseUrl = "http://localhost:8080" + testUri;
-    final URI uri = new URI(baseUrl);
-    final ResponseEntity<String> result = restTemplate.getForEntity(uri, String.class);
-    assertEquals(200, result.getStatusCodeValue());
-  }
-
-  @Test(expected = HttpClientErrorException.class)
-  public void generateReport_APIController_DuplicationAnalyzer_InvalidFilePath_GenerateWith404STatus() throws UnsupportedEncodingException, URISyntaxException {
-    final String testUri = "/api/sim/?path=" + PathEncoder.encodeURI(Values.TEST_INVALID_FILE_PATH);
-    final RestTemplate restTemplate = new RestTemplate();
-    final String baseUrl = "http://localhost:8080" + testUri;
-    final URI uri = new URI(baseUrl);
-    ResponseEntity<String> result = null;
-    result = restTemplate.getForEntity(uri, String.class);
-    assertEquals(404, result.getStatusCodeValue());
-  }
-   */
-
   @Test
   public void genCheckstyleGitRepoTestPass() throws FilePathNotValidException, IOException, InterruptedException {
     final CloneGit cg = Mockito.mock(CloneGit.class);

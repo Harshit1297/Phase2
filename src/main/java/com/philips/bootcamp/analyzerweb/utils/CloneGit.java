@@ -12,10 +12,11 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 
 public class CloneGit {
 
-
-  String cloneDirectoryPath3="C:/Project_Material/GithubProjects/";
+  String param="C:/Project_Material/GithubProjects/";
+  String cloneDirectoryPath3=param;
 
   public CloneGit() {
+    //constructor with no parameter
 
   }
 
@@ -40,6 +41,4 @@ public class CloneGit {
 
     return cloneDirectoryPath3;
   }
-
-
 }

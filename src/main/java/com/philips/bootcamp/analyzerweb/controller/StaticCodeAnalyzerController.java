@@ -29,12 +29,17 @@ import com.philips.bootcamp.analyzerweb.utils.Values;
 public class StaticCodeAnalyzerController {
 
   CloneGit cg = new CloneGit();
-
   CheckstyleAnalyzer csa = new CheckstyleAnalyzer(Values.CHECKSTYLE_PATH, Values.CHECKSTYLE_RULESET);
   PmdAnalyzer pmd = new PmdAnalyzer(Values.PMD_RULESET);
   SimilarityAnalyzer simian = new SimilarityAnalyzer(Values.SIMIAN_PATH);
-
   IntegratedAnalyzer iAnalyzer = new IntegratedAnalyzer();
+
+  String countString = "Count of Issues = %d%n";
+  String responsePositive = "GO\n";
+  String responseNegative = "NO-GO\n";
+  String fileName = "Test.java";
+  String sourceDirectoryName = "source";
+
 
   public void setCloneGit(CloneGit cg) { this.cg = cg; }
   public void setCheckstyleAnalyzer(CheckstyleAnalyzer csa) { this.csa = csa; }
@@ -52,11 +57,9 @@ public class StaticCodeAnalyzerController {
 
     try {
       object.put("data", csa.generateReport().toString());
-      System.out.println(object);
       return ResponseEntity.ok().body(object.toString());
     } catch (final FilePathNotValidException e) {
       object.put("data", Values.ERROR_FILE_NOT_FOUND);
-      System.out.println(object);
       return new ResponseEntity<>(object.toString(), HttpStatus.NOT_FOUND);
     }
   }
@@ -65,8 +68,8 @@ public class StaticCodeAnalyzerController {
   public ResponseEntity<String> genCheckstyleCodeRepo(@RequestBody String source)
       throws IOException, InterruptedException {
 
-    final File parent = FileUtils.createDirectory("source");
-    final File sourceFile = new File(parent, "Test.java");
+    final File parent = FileUtils.createDirectory(sourceDirectoryName);
+    final File sourceFile = new File(parent, fileName);
     FileUtils.writeFileContents(sourceFile, source);
 
     csa.setFilepath(parent.getAbsolutePath());
@@ -78,17 +81,16 @@ public class StaticCodeAnalyzerController {
 
       final int countOfIssues = csa.getIssueCount();
       final StringBuilder output = csa.generateReport();
-      object.put("data", output.insert(0, String.format("Count of Issues = %d%n", countOfIssues)));
+      object.put("data", output.insert(0, String.format(countString, countOfIssues)));
       if (countOfIssues == 0) {
-        object.put("data", output.insert(0, "GO\n"));
+        object.put("data", output.insert(0, responsePositive));
       } else {
-        object.put("data", output.insert(0, "NO-GO\n"));
+        object.put("data", output.insert(0, responseNegative));
       }
       FileUtils.deleteDirectoryRecursion(parent.toPath());
       return ResponseEntity.ok().body(object.toString());
     } catch (final FilePathNotValidException e) {
       object.put("data", Values.ERROR_FILE_NOT_FOUND);
-      System.out.println(object);
       return new ResponseEntity<>(object.toString(), HttpStatus.NOT_FOUND);
     }
 
@@ -97,8 +99,8 @@ public class StaticCodeAnalyzerController {
   @PostMapping(value = "/api/code/pmd")
   public ResponseEntity<String> genPmdCodeRepo(@RequestBody String source) throws IOException, InterruptedException {
 
-    final File parent = FileUtils.createDirectory("source");
-    final File sourceFile = new File(parent, "Test.java");
+    final File parent = FileUtils.createDirectory(sourceDirectoryName);
+    final File sourceFile = new File(parent, fileName);
     FileUtils.writeFileContents(sourceFile, source);
 
     pmd.setFilepath(parent.getAbsolutePath());
@@ -108,20 +110,18 @@ public class StaticCodeAnalyzerController {
     try {
       object.put("data", pmd.generateReport().toString());
 
-      System.out.println(object);
       final int countOfIssues = pmd.getIssueCount();
       final StringBuilder output = pmd.generateReport();
-      object.put("data", output.insert(0, String.format("Count of Issues = %d%n", countOfIssues)));
+      object.put("data", output.insert(0, String.format(countString, countOfIssues)));
       if (countOfIssues == 0) {
-        object.put("data", output.insert(0, "GO\n"));
+        object.put("data", output.insert(0, responsePositive));
       } else {
-        object.put("data", output.insert(0, "NO-GO\n"));
+        object.put("data", output.insert(0, responseNegative));
       }
       FileUtils.deleteDirectoryRecursion(parent.toPath());
       return ResponseEntity.ok().body(object.toString());
     } catch (final FilePathNotValidException e) {
       object.put("data", Values.ERROR_FILE_NOT_FOUND);
-      System.out.println(object);
       return new ResponseEntity<>(object.toString(), HttpStatus.NOT_FOUND);
     }
   }
@@ -136,11 +136,9 @@ public class StaticCodeAnalyzerController {
 
     try {
       object.put("data", pmd.generateReport().toString());
-      System.out.println(object);
       return ResponseEntity.ok().body(object.toString());
     } catch (final FilePathNotValidException e) {
       object.put("data", Values.ERROR_FILE_NOT_FOUND);
-      System.out.println(object);
       return new ResponseEntity<>(object.toString(), HttpStatus.NOT_FOUND);
     }
   }
@@ -164,7 +162,7 @@ public class StaticCodeAnalyzerController {
   @PostMapping(value = "/api/code/sim")
   public ResponseEntity<String> genSimianCodeRepo(@RequestBody String source) throws IOException, InterruptedException {
     final File parent = FileUtils.createDirectory("source");
-    final File sourceFile = new File(parent, "Test.java");
+    final File sourceFile = new File(parent, fileName);
     FileUtils.writeFileContents(sourceFile, source);
 
     simian.setFilepath(parent.getAbsolutePath());
@@ -175,11 +173,11 @@ public class StaticCodeAnalyzerController {
       object.put("data", simian.generateReport().toString());
       final int countOfIssues = simian.getIssueCount();
       final StringBuilder output = simian.generateReport();
-      object.put("data", output.insert(0, String.format("Count of Issues = %d%n", countOfIssues)));
+      object.put("data", output.insert(0, String.format(countString, countOfIssues)));
       if (countOfIssues == 0) {
-        object.put("data", output.insert(0, "GO\n"));
+        object.put("data", output.insert(0, responsePositive));
       } else {
-        object.put("data", output.insert(0, "NO-GO\n"));
+        object.put("data", output.insert(0, responseNegative));
       }
       FileUtils.deleteDirectoryRecursion(parent.toPath());
       return ResponseEntity.ok().body(object.toString());
@@ -193,7 +191,6 @@ public class StaticCodeAnalyzerController {
   public ResponseEntity<String> genIntegratedReport(@RequestBody String gitfilepath)
       throws IOException, InterruptedException {
 
-    final IntegratedAnalyzer integratedAnalyzer;
     final String filepath = cg.cloneRepo(gitfilepath);
 
     csa.setFilepath(filepath);
@@ -209,19 +206,17 @@ public class StaticCodeAnalyzerController {
     final JSONObject object = new JSONObject();
     try {
       object.put("data", iAnalyzer.generateReport().toString());
-      System.out.println(object);
       final int countOfIssues = iAnalyzer.getIssueCount();
       final StringBuilder output = iAnalyzer.generateReport();
-      object.put("data", output.insert(0, String.format("Count of Issues = %d%n", countOfIssues)));
+      object.put("data", output.insert(0, String.format(countString, countOfIssues)));
       if (countOfIssues == 0) {
-        object.put("data", output.insert(0, "GO\n"));
+        object.put("data", output.insert(0, responsePositive));
       } else {
-        object.put("data", output.insert(0, "NO-GO\n"));
+        object.put("data", output.insert(0, responseNegative));
       }
       return ResponseEntity.ok().body(object.toString());
     } catch (final FilePathNotValidException e) {
       object.put("data", Values.ERROR_FILE_NOT_FOUND);
-      System.out.println(object);
       return new ResponseEntity<>(object.toString(), HttpStatus.NOT_FOUND);
     }
   }
@@ -229,8 +224,8 @@ public class StaticCodeAnalyzerController {
   @PostMapping(value = "/api/code/all")
   public ResponseEntity<String> genIntegratedRepoForCode(@RequestBody String source)
       throws IOException, InterruptedException {
-    final File parent = FileUtils.createDirectory("source");
-    final File sourceFile = new File(parent, "Test.java");
+    final File parent = FileUtils.createDirectory(sourceDirectoryName);
+    final File sourceFile = new File(parent, fileName);
     FileUtils.writeFileContents(sourceFile, source);
 
     simian.setFilepath(parent.getAbsolutePath());
@@ -244,20 +239,18 @@ public class StaticCodeAnalyzerController {
     final JSONObject object = new JSONObject();
     try {
       object.put("data", iAnalyzer.generateReport().toString());
-      System.out.println(object);
       final int countOfIssues = iAnalyzer.getIssueCount();
       final StringBuilder output = iAnalyzer.generateReport();
-      object.put("data", output.insert(0, String.format("Count of Issues = %d%n", countOfIssues)));
+      object.put("data", output.insert(0, String.format(countString, countOfIssues)));
       if (countOfIssues == 0) {
-        object.put("data", output.insert(0, "GO\n"));
+        object.put("data", output.insert(0, responsePositive));
       } else {
-        object.put("data", output.insert(0, "NO-GO\n"));
+        object.put("data", output.insert(0, responseNegative));
       }
       FileUtils.deleteDirectoryRecursion(parent.toPath());
       return ResponseEntity.ok().body(object.toString());
     } catch (final FilePathNotValidException e) {
       object.put("data", Values.ERROR_FILE_NOT_FOUND);
-      System.out.println(object);
       return new ResponseEntity<>(object.toString(), HttpStatus.NOT_FOUND);
     }
   }

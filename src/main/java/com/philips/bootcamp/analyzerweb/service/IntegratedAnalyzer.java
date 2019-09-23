@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.philips.bootcamp.analyzerweb.exceptions.FilePathNotValidException;
 import com.philips.bootcamp.analyzerweb.model.Tool;
-;
+
 
 public class IntegratedAnalyzer extends Tool{
 
@@ -52,7 +52,7 @@ public class IntegratedAnalyzer extends Tool{
 
   @Override
   public String toString() {
-    return null;
+    return "";
   }
 
 }
